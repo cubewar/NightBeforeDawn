@@ -7,7 +7,7 @@ var players: Dictionary = {}
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	steam_id = Steam.get_steam_id()
+	steam_id = Steam.getSteamID()
 
 	%ReadyButton.pressed.connect(_on_ready_pressed)
 	%StartButton.pressed.connect(_on_start_pressed)
@@ -16,19 +16,19 @@ func _ready():
 	%BackButton.pressed.connect(_on_back_pressed)
 
 	Steam.lobby_match_list.connect(_on_lobby_match_list)
-	Steam.join_lobby.connect(_on_join_lobby)
+	Steam.lobby_joined.connect(_on_join_lobby)
 	Steam.lobby_chat_update.connect(_on_lobby_chat_update)
 
 	%StatusLabel.text = "Ready to join or create lobby"
 	update_player_display()
 
 func _on_create_lobby_pressed():
-	Steam.create_lobby(Steam.LOBBY_TYPE_PUBLIC, 4)
+	Steam.createLobby(Steam.LOBBY_TYPE_PUBLIC, 4)
 	%StatusLabel.text = "Creating lobby..."
 
 func _on_join_lobby_pressed():
 	if lobby_id > 0:
-		Steam.join_lobby(lobby_id)
+		Steam.joinLobby(lobby_id)
 
 func _on_ready_pressed():
 	if lobby_id <= 0:
@@ -36,7 +36,7 @@ func _on_ready_pressed():
 	var player_data = {
 		"ready": not players.get(str(steam_id), {}).get("ready", false)
 	}
-	Steam.set_lobby_member_data(lobby_id, "ready", str(player_data.ready))
+	Steam.setLobbyMemberData(lobby_id, "ready", str(player_data.ready))
 	players[str(steam_id)]["ready"] = player_data.ready
 	update_player_display()
 
@@ -52,14 +52,14 @@ func _on_start_pressed():
 
 	if all_ready and players.size() >= 1:
 		for player_id in players.keys():
-			Steam.send_p2p_packet(int(player_id), "START_GAME")
+			Steam.sendP2PPacket(int(player_id), "START_GAME".to_utf8_buffer(), Steam.P2P_SEND_RELIABLE, 0)
 		get_tree().change_scene_to_file("res://Scenes/game.tscn")
 	else:
 		%StatusLabel.text = "Not all players ready!"
 
 func _on_leave_pressed():
 	if lobby_id > 0:
-		Steam.leave_lobby(lobby_id)
+		Steam.leaveLobby(lobby_id)
 	lobby_id = 0
 	is_host = false
 	players.clear()
@@ -88,12 +88,13 @@ func update_player_display():
 	%PlayerListLabel.text = "Players:\n"
 
 	if lobby_id > 0:
-		var lobby_members = Steam.get_lobby_members(lobby_id)
+		var member_count: int = Steam.getNumLobbyMembers(lobby_id)
 		players.clear()
 
-		for member_id in lobby_members:
-			var member_name = Steam.get_friend_personaname(member_id)
-			var member_ready = Steam.get_lobby_member_data(lobby_id, member_id, "ready") == "true"
+		for i in range(member_count):
+			var member_id: int = Steam.getLobbyMemberByIndex(lobby_id, i)
+			var member_name = Steam.getFriendPersonaName(member_id)
+			var member_ready = Steam.getLobbyMemberData(lobby_id, member_id, "ready") == "true"
 			players[str(member_id)] = {"name": member_name, "ready": member_ready}
 
 			var status = "[READY]" if member_ready else "[NOT READY]"

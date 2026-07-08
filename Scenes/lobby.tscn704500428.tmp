@@ -1,0 +1,97 @@
+[gd_scene format=3 uid="uid://b127sw7xv4pjf"]
+
+[ext_resource type="Script" uid="uid://bt81uiyxwryad" path="res://Scenes/lobby.gd" id="1_lobby"]
+
+[node name="Lobby" type="Control" unique_id=285142281]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lobby")
+
+[node name="Background" type="ColorRect" parent="." unique_id=285142282]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08, 0.08, 0.1, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=285142283]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="VBoxContainer" unique_id=285142284]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Steam Lobby"
+horizontal_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="VBoxContainer" unique_id=285142285]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Status"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer" unique_id=285142286]
+layout_mode = 2
+
+[node name="PlayerListLabel" type="Label" parent="VBoxContainer" unique_id=285142287]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Players:"
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer" unique_id=285142288]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=285142289]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CreateLobbyButton" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=285142290]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Create"
+
+[node name="ReadyButton" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=285142291]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Ready"
+
+[node name="StartButton" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=285142292]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Start"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer" unique_id=285142293]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LeaveButton" type="Button" parent="VBoxContainer/HBoxContainer2" unique_id=285142294]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Leave"
+
+[node name="BackButton" type="Button" parent="VBoxContainer/HBoxContainer2" unique_id=285142295]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Back"
