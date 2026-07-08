@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://snomy2vf3w5m"]
+
+[ext_resource type="Script" uid="uid://cmyl72khwwtvx" path="res://Scenes/door.gd" id="1_w6aom"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_h7j2x"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_w6aom"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_h7j2x"]
+size = Vector3(0.2, 0.1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_w6aom"]
+
+[sub_resource type="FontVariation" id="FontVariation_w6aom"]
+
+[node name="Door" type="Node3D" unique_id=1536816109]
+transform = Transform3D(3.3, 0, 0, 0, 4.84, 0, 0, 0, 1, 0, 0, 0)
+script = ExtResource("1_w6aom")
+
+[node name="DoorBody" type="AnimatableBody3D" parent="." unique_id=1637860999]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.095, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="DoorBody" unique_id=1651065273]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4958678, 0)
+mesh = SubResource("BoxMesh_h7j2x")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DoorBody" unique_id=1358323318]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4958678, 0)
+shape = SubResource("BoxShape3D_w6aom")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=1314878481]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.666667, -0.30991733, -0.5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1906514627]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.6, 0, 0, 0)
+shape = SubResource("BoxShape3D_h7j2x")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Area3D" unique_id=355837079]
+transform = Transform3D(0.20000002, 0, 0, 0, 0.09999998, 0, 0, 0, 0.6, 0, 0, 0)
+mesh = SubResource("BoxMesh_w6aom")
+
+[node name="Label3D" type="Label3D" parent="." unique_id=591788546]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0.6363637, 0, -1.3000001)
+text = "Press E"
+font = SubResource("FontVariation_w6aom")
+
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_exited" from="Area3D" to="." method="_on_area_3d_body_exited"]

@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://duarvmcseu6lf"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_pd5hp"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pd5hp"]
+albedo_color = Color(0.37413925, 0.37413928, 0.37413922, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_dfmn1"]
+size = Vector3(0.51, 0.2, 0.235)
+
+[node name="FlashLight" type="Node3D" unique_id=1795385770]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=763906233]
+transform = Transform3D(0.0039395643, 0.20714998, 0, -0.44257653, 0.0018439312, 0, 0, 0, 0.45848927, 0, 0, 0)
+mesh = SubResource("CylinderMesh_pd5hp")
+surface_material_override/0 = SubResource("StandardMaterial3D_pd5hp")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=1129025451]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3783015, 0, 0)
+mesh = SubResource("BoxMesh_dfmn1")
+surface_material_override/0 = SubResource("StandardMaterial3D_pd5hp")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=577821328]
+transform = Transform3D(-0.102445364, 0, -0.99473864, 0, 1, 0, 0.99473864, 0, -0.102445364, 0, 0, 0)
