@@ -5,18 +5,18 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qbkls"]
 
-[node name="Player" type="CharacterBody3D" unique_id=1782823697 groups=["Player"]]
+[node name="Player" type="CharacterBody3D" groups=["Player"]]
 script = ExtResource("1_kyqiw")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1041929051]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_qbkls")
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=462699900]
+[node name="Camera3D" type="Camera3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4865924, 0)
 fov = 55.0
 near = 0.068
 
-[node name="FlashLight" parent="Camera3D" unique_id=1795385770 instance=ExtResource("1_rpqav")]
+[node name="FlashLight" type="Node3D" parent="Camera3D" instance=ExtResource("1_rpqav")]
 unique_name_in_owner = true
 transform = Transform3D(-0.15269774, 0, -0.6563965, 0, -0.63064283, 0, -0.5538748, 0, 0.18096197, 0.46135592, -0.32192767, -0.98954546)

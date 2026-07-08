@@ -68,19 +68,24 @@ func _on_leave_pressed():
 func _on_back_pressed():
 	_on_leave_pressed()
 
-func _on_lobby_match_list(lobbies: Array):
+func _on_lobby_match_list(_lobbies: Array):
 	pass
 
-func _on_join_lobby(result: Dictionary):
-	if result["result"] == Steam.RESULT_OK:
-		lobby_id = result["lobby_id"]
-		is_host = result["lobby_owner"] == steam_id
+func _on_join_lobby(lobby_id_in: int, permissions: int, locked: bool, response: int):
+	# In GodotSteam, a response of 1 means SUCCESS (RESULT_OK)
+	if response == 1:
+		lobby_id = lobby_id_in
+		
+		# Check if you are the host by asking Steam who owns this lobby ID
+		var lobby_owner = Steam.getLobbyOwner(lobby_id)
+		is_host = (lobby_owner == steam_id)
+		
 		%StatusLabel.text = "Joined lobby" if not is_host else "Created lobby (Host)"
 		update_player_display()
 	else:
-		%StatusLabel.text = "Failed to join lobby"
+		%StatusLabel.text = "Failed to join lobby. Error code: " + str(response)
 
-func _on_lobby_chat_update(lobby_id_update: int, user_changed: int, user_making_change: int, chat_state: int):
+func _on_lobby_chat_update(lobby_id_update: int, _user_changed: int, _user_making_change: int, _chat_state: int):
 	if lobby_id_update == lobby_id:
 		update_player_display()
 

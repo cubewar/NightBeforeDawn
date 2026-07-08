@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://v0577m0j0qiv"]
+
+[ext_resource type="Script" uid="uid://dr2wij5moif8e" path="res://Scenes/energy_container.gd" id="1_container"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_container"]
+size = Vector3(0.8, 1, 0.8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_container"]
+size = Vector3(1.4, 1.6, 1.4)
+
+[sub_resource type="FontVariation" id="FontVariation_container"]
+
+[node name="EnergyContainer" type="Node3D" unique_id=322242735]
+script = ExtResource("1_container")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1690207417]
+transform = Transform3D(1.71, 0, 0, 0, 0.39999998, 0, 0, 0, 1.7, 0, 0.5, 0)
+mesh = SubResource("BoxMesh_container")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=1574803134]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=909898850]
+shape = SubResource("BoxShape3D_container")
+
+[node name="Label3D" type="Label3D" parent="." unique_id=2094928379]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+text = "Press E to Insert Orb"
+font = SubResource("FontVariation_container")

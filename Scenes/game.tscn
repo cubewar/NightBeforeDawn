@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://dugi4rffjvxfl"]
 
+[ext_resource type="PackedScene" uid="uid://v0577m0j0qiv" path="res://Scenes/EnergyContainer.tscn" id="1_container"]
 [ext_resource type="PackedScene" uid="uid://b30ksibmwfdc5" path="res://Scenes/Player.tscn" id="1_ebmjs"]
+[ext_resource type="PackedScene" uid="uid://dt7ckd7c12y4o" path="res://Scenes/EngeryOrb.tscn" id="1_orb"]
 [ext_resource type="PackedScene" uid="uid://snomy2vf3w5m" path="res://Scenes/door.tscn" id="1_qxrlw"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_2poj3"]
@@ -72,3 +74,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.6, 1.4000001, 9.1)
 transform = Transform3D(4.2, 0, 0, 0, 1, 0, 0, 0, 1, -18.800001, 0.90000004, 3.9)
 use_collision = true
 mesh = SubResource("PrismMesh_ebmjs")
+
+[node name="EngeryOrb" parent="." unique_id=955567240 instance=ExtResource("1_orb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2, 0)
+
+[node name="EnergyContainer" parent="." unique_id=1306560629 instance=ExtResource("1_container")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -1.6999998, 0, -2.5)
+door_path = NodePath("../Door")
