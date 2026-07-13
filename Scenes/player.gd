@@ -4,8 +4,13 @@ const PICKUP_RANGE = 4.0
 
 var held_item: Node3D = null
 
+func _enter_tree() -> void:
+	set_multiplayer_authority(name.to_int())
+
+
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
 
 func _unhandled_input(event: InputEvent):
 	if event is InputEventMouseMotion:
@@ -21,7 +26,11 @@ func _unhandled_input(event: InputEvent):
 			try_pickup()
 
 
+
 func _physics_process(delta):
+	if not is_multiplayer_authority():
+		return
+	
 	const SPEED = 5.5
 	var input_direction_2D = Input.get_vector(
 		"move_left", "move_right", "move_foward", "move_back"

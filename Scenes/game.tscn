@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://b30ksibmwfdc5" path="res://Scenes/Player.tscn" id="1_ebmjs"]
 [ext_resource type="PackedScene" uid="uid://dt7ckd7c12y4o" path="res://Scenes/EngeryOrb.tscn" id="1_orb"]
 [ext_resource type="PackedScene" uid="uid://snomy2vf3w5m" path="res://Scenes/door.tscn" id="1_qxrlw"]
+[ext_resource type="Script" uid="uid://c5ovkq1sqosi1" path="res://Scenes/game_root.gd" id="5_wowpa"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_2poj3"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -81,3 +82,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2, 0)
 [node name="EnergyContainer" parent="." unique_id=1306560629 instance=ExtResource("1_container")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -1.6999998, 0, -2.5)
 door_path = NodePath("../Door")
+
+[node name="GameRoot" type="Node3D" parent="." unique_id=936292732]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.8, 1.8000001, -8.400001)
+script = ExtResource("5_wowpa")
+
+[node name="Players" type="Node3D" parent="GameRoot" unique_id=1798344272]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="GameRoot" unique_id=1584510034]
+_spawnable_scenes = PackedStringArray("uid://b30ksibmwfdc5")
+spawn_path = NodePath("../Players")
