@@ -4,6 +4,8 @@ var steam_id: int = 0
 var lobby_id: int = 0
 var is_host: bool = false
 var players: Dictionary = {}
+var my_ready: bool = false
+var game_started: bool = false
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
@@ -19,6 +21,7 @@ func _ready():
 	Steam.lobby_match_list.connect(_on_lobby_match_list)
 	Steam.lobby_joined.connect(_on_join_lobby)
 	Steam.lobby_chat_update.connect(_on_lobby_chat_update)
+	Steam.lobby_data_update.connect(_on_lobby_data_update)
 
 	%StatusLabel.text = "Ready to join or create lobby"
 	update_player_display()
@@ -41,15 +44,16 @@ func _on_invite_pressed():
 func _on_ready_pressed():
 	if lobby_id <= 0:
 		return
-	var player_data = {
-		"ready": not players.get(str(steam_id), {}).get("ready", false)
-	}
-	Steam.setLobbyMemberData(lobby_id, "ready", str(player_data.ready))
-	players[str(steam_id)]["ready"] = player_data.ready
+	# Flip our own ready flag optimistically instead of reading it back from
+	# Steam right away - GodotSteam only mirrors setLobbyMemberData locally
+	# after the next run_callbacks() pass, so reading it back in the same
+	# frame could still return the old value and make the button look stuck.
+	my_ready = not my_ready
+	Steam.setLobbyMemberData(lobby_id, "ready", str(my_ready))
 	update_player_display()
 
 func _on_start_pressed():
-	if not is_host or lobby_id <= 0:
+	if not is_host or lobby_id <= 0 or game_started:
 		return
 
 	var all_ready = true
@@ -59,17 +63,34 @@ func _on_start_pressed():
 			break
 
 	if all_ready and players.size() >= 1:
-		for player_id in players.keys():
-			Steam.sendP2PPacket(int(player_id), "START_GAME".to_utf8_buffer(), Steam.P2P_SEND_RELIABLE, 0)
-		get_tree().change_scene_to_file("res://Scenes/game.tscn")
+		Steam.setLobbyData(lobby_id, "started", "true")
+		start_networked_game()
 	else:
 		%StatusLabel.text = "Not all players ready!"
+
+func start_networked_game():
+	if game_started:
+		return
+	game_started = true
+
+	var peer = SteamMultiplayerPeer.new()
+	if is_host:
+		peer.create_host(0)
+	else:
+		var host_steam_id = Steam.getLobbyOwner(lobby_id)
+		peer.create_client(host_steam_id, 0)
+
+	multiplayer.multiplayer_peer = peer
+	get_tree().change_scene_to_file("res://Scenes/game.tscn")
 
 func _on_leave_pressed():
 	if lobby_id > 0:
 		Steam.leaveLobby(lobby_id)
+	multiplayer.multiplayer_peer = null
 	lobby_id = 0
 	is_host = false
+	my_ready = false
+	game_started = false
 	players.clear()
 	get_tree().change_scene_to_file("res://Scenes/MainMenu.tscn")
 
@@ -100,6 +121,19 @@ func _on_lobby_chat_update(lobby_id_update: int, _user_changed: int, _user_makin
 	if lobby_id_update == lobby_id:
 		update_player_display()
 
+# Fires whenever lobby data OR any member's lobby data changes - this is what
+# actually propagates a "ready" toggle (setLobbyMemberData) to OTHER peers,
+# and is also how non-host clients learn the host set "started" = "true".
+func _on_lobby_data_update(lobby_id_update: int, _member_id: int, _success: int = 1) -> void:
+	if lobby_id_update != lobby_id:
+		return
+
+	update_player_display()
+
+	if not is_host and not game_started and Steam.getLobbyData(lobby_id, "started") == "true":
+		%StatusLabel.text = "Host started the game, connecting..."
+		start_networked_game()
+
 func update_player_display():
 	%PlayerListLabel.text = "Players:\n"
 
@@ -110,7 +144,8 @@ func update_player_display():
 		for i in range(member_count):
 			var member_id: int = Steam.getLobbyMemberByIndex(lobby_id, i)
 			var member_name = Steam.getFriendPersonaName(member_id)
-			var member_ready = Steam.getLobbyMemberData(lobby_id, member_id, "ready") == "true"
+			# Trust our own optimistic flag for ourselves - see _on_ready_pressed().
+			var member_ready = my_ready if member_id == steam_id else Steam.getLobbyMemberData(lobby_id, member_id, "ready") == "true"
 			players[str(member_id)] = {"name": member_name, "ready": member_ready}
 
 			var status = "[READY]" if member_ready else "[NOT READY]"
