@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://dugi4rffjvxfl"]
 
 [ext_resource type="PackedScene" uid="uid://v0577m0j0qiv" path="res://Scenes/EnergyContainer.tscn" id="1_container"]
-[ext_resource type="PackedScene" uid="uid://b30ksibmwfdc5" path="res://Scenes/Player.tscn" id="1_ebmjs"]
 [ext_resource type="PackedScene" uid="uid://dt7ckd7c12y4o" path="res://Scenes/EngeryOrb.tscn" id="1_orb"]
 [ext_resource type="PackedScene" uid="uid://snomy2vf3w5m" path="res://Scenes/door.tscn" id="1_qxrlw"]
 [ext_resource type="Script" uid="uid://c5ovkq1sqosi1" path="res://Scenes/game_root.gd" id="5_wowpa"]
@@ -67,9 +66,6 @@ size = Vector3(1, 8.1, 20.6)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.049999952, -1.8500001, -3.8500004)
 operation = 2
 size = Vector3(2.9, 4.4, 2.9)
-
-[node name="CharacterBody3D" parent="." unique_id=1782823697 instance=ExtResource("1_ebmjs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.6, 1.4000001, 9.1)
 
 [node name="CSGMesh3D" type="CSGMesh3D" parent="." unique_id=955567239]
 transform = Transform3D(4.2, 0, 0, 0, 1, 0, 0, 0, 1, -18.800001, 0.90000004, 3.9)
