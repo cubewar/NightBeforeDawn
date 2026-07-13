@@ -6,17 +6,24 @@
 [ext_resource type="Script" uid="uid://c5ovkq1sqosi1" path="res://Scenes/game_root.gd" id="5_wowpa"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_2poj3"]
+sky_top_color = Color(0.035710335, 0.052548207, 0.0750955, 1)
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+sky_cover_modulate = Color(0.22620109, 0.28714058, 0.44835794, 1)
+ground_horizon_color = Color(0.34796804, 0.3102379, 0.35504138, 1)
 
 [sub_resource type="Sky" id="Sky_ebmjs"]
 sky_material = SubResource("ProceduralSkyMaterial_2poj3")
+radiance_size = 2
 
 [sub_resource type="Environment" id="Environment_qxrlw"]
 background_mode = 2
 sky = SubResource("Sky_ebmjs")
 tonemap_mode = 2
 glow_enabled = true
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.2033
+volumetric_fog_albedo = Color(0.28485027, 0.28485027, 0.28485027, 1)
+volumetric_fog_gi_inject = 1.28
 
 [sub_resource type="PrismMesh" id="PrismMesh_ebmjs"]
 
@@ -30,6 +37,8 @@ environment = SubResource("Environment_qxrlw")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1458406957]
 transform = Transform3D(-0.7325945, -0.46793038, 0.49431425, 0.3458473, 0.3695979, 0.8624309, -0.58625513, 0.80276936, -0.108932905, 0, 21.1, -15.1)
+light_color = Color(0.2966023, 0.2966023, 0.2966023, 1)
+light_energy = 0.04
 shadow_enabled = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=1483733648]

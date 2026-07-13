@@ -9,10 +9,22 @@ func _enter_tree() -> void:
 
 
 func _ready():
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	# Every spawned Player (yours AND everyone else's puppet in your world)
+	# runs this same script. Only the one whose name matches our own peer id
+	# should capture the mouse or take over the viewport's camera - otherwise
+	# remote players' cameras fight for "current" and the view can jump to a
+	# different player, and their bodies react to our local mouse input too.
+	if is_multiplayer_authority():
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		%Camera3D.current = true
+	else:
+		%Camera3D.current = false
 
 
 func _unhandled_input(event: InputEvent):
+	if not is_multiplayer_authority():
+		return
+
 	if event is InputEventMouseMotion:
 		rotation_degrees.y -= event.relative.x * 0.5
 		%Camera3D.rotation_degrees.x -= event.relative.y * 0.2

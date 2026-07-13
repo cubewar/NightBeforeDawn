@@ -5,6 +5,19 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qbkls"]
 
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_kyqiw"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_player"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath("Camera3D:rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
 [node name="Player" type="CharacterBody3D" unique_id=1377185732 groups=["Player"]]
 script = ExtResource("1_kyqiw")
 
@@ -20,3 +33,9 @@ near = 0.068
 [node name="FlashLight" parent="Camera3D" unique_id=1561630041 instance=ExtResource("1_rpqav")]
 unique_name_in_owner = true
 transform = Transform3D(-0.15269774, 0, -0.6563965, 0, -0.63064283, 0, -0.5538748, 0, 0.18096197, 0.46135592, -0.32192767, -0.98954546)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=573286163]
+mesh = SubResource("CapsuleMesh_kyqiw")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_player")
