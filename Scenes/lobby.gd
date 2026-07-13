@@ -16,6 +16,7 @@ func _ready():
 	%LeaveButton.pressed.connect(_on_leave_pressed)
 	%CreateLobbyButton.pressed.connect(_on_create_lobby_pressed)
 	%InviteButton.pressed.connect(_on_invite_pressed)
+	%FriendsListButton.pressed.connect(_on_friends_list_pressed)
 	%BackButton.pressed.connect(_on_back_pressed)
 
 	Steam.lobby_match_list.connect(_on_lobby_match_list)
@@ -38,8 +39,19 @@ func _on_create_lobby_pressed():
 	%StatusLabel.text = "Creating lobby..."
 
 func _on_invite_pressed():
-	if lobby_id > 0:
-		Steam.activateGameOverlayInviteDialog(lobby_id)
+	if lobby_id <= 0:
+		return
+	print("[Lobby] Opening Steam invite overlay for lobby ", lobby_id)
+	Steam.activateGameOverlayInviteDialog(lobby_id)
+
+func _on_friends_list_pressed():
+	# Fallback path: activateGameOverlayInviteDialog needs the Steam overlay
+	# to be enabled (Steam client > Settings > In-Game > "Enable the Steam
+	# Overlay while in-game") and the game to be running as a process Steam
+	# has actually hooked. If the dedicated invite dialog silently does
+	# nothing, opening the general Friends overlay still lets you right
+	# click a friend and choose "Invite to Play" manually.
+	Steam.activateGameOverlay("friends")
 
 func _on_ready_pressed():
 	if lobby_id <= 0:
@@ -122,17 +134,26 @@ func _on_lobby_chat_update(lobby_id_update: int, _user_changed: int, _user_makin
 		update_player_display()
 
 # Fires whenever lobby data OR any member's lobby data changes - this is what
-# actually propagates a "ready" toggle (setLobbyMemberData) to OTHER peers,
-# and is also how non-host clients learn the host set "started" = "true".
-func _on_lobby_data_update(lobby_id_update: int, _member_id: int, _success: int = 1) -> void:
-	if lobby_id_update != lobby_id:
-		return
-
+# actually propagates a "ready" toggle (setLobbyMemberData) to OTHER peers.
+# We deliberately don't gate this on comparing the signal's lobby id argument
+# against our own - GodotSteam's exact argument order for this signal varies
+# by version, and getting it wrong silently drops every update except the
+# ones triggered by our own optimistic local flag (which is what was
+# happening: only your own ready-press ever visibly updated anything).
+# We're only ever in one lobby at a time in this scene, so just refresh.
+func _on_lobby_data_update(_a = null, _b = null, _c = null) -> void:
 	update_player_display()
 
-	if not is_host and not game_started and Steam.getLobbyData(lobby_id, "started") == "true":
-		%StatusLabel.text = "Host started the game, connecting..."
-		start_networked_game()
+# Defensive poll for the host starting the game. Relying solely on the
+# lobby_data_update signal to notice "started" == "true" is fragile for the
+# same reason noted above, so every client also actively checks lobby data
+# each frame - cheap, and guarantees everyone actually transitions into the
+# game when the host presses Start, not just the host.
+func _process(_delta: float) -> void:
+	if lobby_id > 0 and not is_host and not game_started:
+		if Steam.getLobbyData(lobby_id, "started") == "true":
+			%StatusLabel.text = "Host started the game, connecting..."
+			start_networked_game()
 
 func update_player_display():
 	%PlayerListLabel.text = "Players:\n"
