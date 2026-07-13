@@ -13,6 +13,7 @@ func _ready():
 	%StartButton.pressed.connect(_on_start_pressed)
 	%LeaveButton.pressed.connect(_on_leave_pressed)
 	%CreateLobbyButton.pressed.connect(_on_create_lobby_pressed)
+	%InviteButton.pressed.connect(_on_invite_pressed)
 	%BackButton.pressed.connect(_on_back_pressed)
 
 	Steam.lobby_match_list.connect(_on_lobby_match_list)
@@ -22,13 +23,20 @@ func _ready():
 	%StatusLabel.text = "Ready to join or create lobby"
 	update_player_display()
 
+	# If we got here because a Steam friend invite was accepted (either the
+	# game was already running or was just launched by Steam), join it now.
+	if SteamManager.pending_lobby_id > 0:
+		%StatusLabel.text = "Joining invited lobby..."
+		Steam.joinLobby(SteamManager.pending_lobby_id)
+		SteamManager.pending_lobby_id = 0
+
 func _on_create_lobby_pressed():
 	Steam.createLobby(Steam.LOBBY_TYPE_PUBLIC, 4)
 	%StatusLabel.text = "Creating lobby..."
 
-func _on_join_lobby_pressed():
+func _on_invite_pressed():
 	if lobby_id > 0:
-		Steam.joinLobby(lobby_id)
+		Steam.activateGameOverlayInviteDialog(lobby_id)
 
 func _on_ready_pressed():
 	if lobby_id <= 0:
@@ -75,11 +83,14 @@ func _on_join_lobby(lobby_id_in: int, permissions: int, locked: bool, response: 
 	# In GodotSteam, a response of 1 means SUCCESS (RESULT_OK)
 	if response == 1:
 		lobby_id = lobby_id_in
-		
+
 		# Check if you are the host by asking Steam who owns this lobby ID
 		var lobby_owner = Steam.getLobbyOwner(lobby_id)
 		is_host = (lobby_owner == steam_id)
-		
+
+		if is_host:
+			Steam.setLobbyJoinable(lobby_id, true)
+
 		%StatusLabel.text = "Joined lobby" if not is_host else "Created lobby (Host)"
 		update_player_display()
 	else:
@@ -107,3 +118,4 @@ func update_player_display():
 
 	%ReadyButton.disabled = lobby_id <= 0
 	%StartButton.disabled = not is_host or lobby_id <= 0
+	%InviteButton.disabled = lobby_id <= 0
